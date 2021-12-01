@@ -6,8 +6,8 @@ from dino_runner.utils.constants import RUNNING, DUCKING, JUMPING
 
 class Dinosaur(Sprite):
     X_POS = 50
-    Y_POS = 320
-    Y_POS_DUCK = 350
+    Y_POS = 310
+    Y_POS_DUCK = 340
     JUMP_VEL = 8.5
 
     def __init__(self):
@@ -63,7 +63,6 @@ class Dinosaur(Sprite):
         self.dino_rect.y = self.Y_POS_DUCK
         self.step_index += 1
 
-
     def jump(self):
         self.image = JUMPING
         if self.dino_jump:
@@ -73,5 +72,3 @@ class Dinosaur(Sprite):
             self.dino_rect.y = self.Y_POS
             self.dino_jump = False
             self.jump_vel = self.JUMP_VEL
-
-
