@@ -1,10 +1,10 @@
 import pygame
 
-from dino_runner.components.lives import Lives
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, LIVES, LIST_LIVES
+from dino_runner.components.lives_manager import LivesManager
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.Obstacles.Obtacle_Manager import ObstacleManager
-from dino_runner.components.text_utils import get_score_element, get_centered_message, show_number_of_deaths
+from dino_runner.components.text_utils import get_score_element, get_menu_data
 from dino_runner.components.power_ups.power_ups.power_up_manager import PowerUpManager
 
 
@@ -20,7 +20,7 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.player = Dinosaur()
-        self.heart = Lives()
+        self.live_manager = LivesManager()
         self.obstacle_manager = ObstacleManager()
         self.points = 0
         self.running = True
@@ -29,8 +29,7 @@ class Game:
 
     def run(self):
         self.game_speed = 20
-        self.live = LIVES
-        self.live_list = [800, 850, 900, 950, 1000]
+        self.live_manager.fill_lives()
         self.points = 0
         self.create_components()
         # Game loop: events - update - draw
@@ -65,8 +64,8 @@ class Game:
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.score()
+        self.live_manager.draw(self.screen)
         self.player.draw(self.screen)
-        self.heart.draw(self.screen, self)
         self.obstacle_manager.draw(self.screen)
         self.powerup_manager.draw(self.screen)
         pygame.display.update()
@@ -97,13 +96,15 @@ class Game:
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
         if death_count == 0:
-            text, text_rect = get_centered_message('Press any key to start the game')
+            text, text_rect = get_menu_data('Press any key to start the game')
             self.screen.blit(text, text_rect)
         elif death_count > 0:
-            text, text_rect = get_centered_message('Press any key to restart game')
+            text, text_rect = get_menu_data('Press any key to restart game')
             self.screen.blit(text, text_rect)
-            text_death, text_death_rect = show_number_of_deaths('Deaths: {}'.format(death_count))
+            text_death, text_death_rect = get_menu_data('Deaths: {}'.format(death_count), 550, 350)
             self.screen.blit(text_death, text_death_rect)
+            text_point, text_point_rect = get_menu_data('Points: {}'.format(self.points), 550, 400)
+            self.screen.blit(text_point, text_point_rect)
 
     def handle_key_events_on_menu(self):
         for event in pygame.event.get():
